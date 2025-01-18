@@ -1,8 +1,11 @@
 package com.santiagogomez.challenge.forohub.controller;
 
-import java.net.URI;
+import java.net.*;
 
+
+import org.springframework.data.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,22 +26,29 @@ public class TopicoControler {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping
-public ResponseEntity<DatosRespuestaTopico> registrarTopico(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder) {
-    Usuario usuario = usuarioRepository.findById(datos.idUsuario())
-        .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + datos.idUsuario()));
-    
-    Topico topico = topicoRepository.save(new Topico(datos, usuario));
-    DatosRespuestaTopico datosRespuestaTopico = new DatosRespuestaTopico(
-        topico.getId(), 
-        topico.getTitulo(), 
-        topico.getMensaje(), 
-        topico.getFechaCreacion(), 
-        topico.getUsuario().getNombre(), 
-        topico.getCurso()
-    );
+    public ResponseEntity<DatosRespuestaTopico> registrarTopico(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder) {
+        Usuario usuario = usuarioRepository.findById(datos.idUsuario())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + datos.idUsuario()));
+        
+        Topico topico = topicoRepository.save(new Topico(datos, usuario));
+        DatosRespuestaTopico datosRespuestaTopico = new DatosRespuestaTopico(
+            topico.getId(), 
+            topico.getTitulo(), 
+            topico.getMensaje(), 
+            topico.getFechaCreacion(), 
+            topico.getUsuario().getNombre(), 
+            topico.getCurso()
+        );
 
-    URI url = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-    return ResponseEntity.created(url).body(datosRespuestaTopico);
-}
+        URI url = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+        return ResponseEntity.created(url).body(datosRespuestaTopico);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DatosListadoTopico>> obtenerTopicos(@PageableDefault Pageable paginacion) {
+        Page<Topico> topicos = topicoRepository.findAll(paginacion);
+        Page<DatosListadoTopico> datosListadoTopicos = topicos.map(DatosListadoTopico::new);
+        return ResponseEntity.ok(datosListadoTopicos);
+    }
 
 }
