@@ -82,7 +82,7 @@ public class TopicoControler {
             if (datosActualizarTopico.usuario() == null || datosActualizarTopico.password() == null ||
                 !datosActualizarTopico.usuario().equals(topico.getUsuario().getNombre()) ||
                 !datosActualizarTopico.password().equals(topico.getUsuario().getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nombre de usuario o contraseña incorrectos. No tiene autorización para actualizar el tópico");
             }
             return ResponseEntity.ok(new DatosRespuestaTopico(topico.getId(), topico.getTitulo(), topico.getMensaje(), topico.getFechaCreacion(), topico.getUsuario().getNombre(), topico.getCurso()));
         } 
@@ -101,7 +101,7 @@ public class TopicoControler {
             if (datosActualizarTopico.usuario() == null || datosActualizarTopico.password() == null ||
             !datosActualizarTopico.usuario().equals(topico.getUsuario().getNombre()) ||
             !datosActualizarTopico.password().equals(topico.getUsuario().getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nombre de usuario o contraseña incorrectos. No tiene autorización para eliminar el tópico");
             }
             topico.desactivarTopico();
             return ResponseEntity.ok("Topico eliminado");
