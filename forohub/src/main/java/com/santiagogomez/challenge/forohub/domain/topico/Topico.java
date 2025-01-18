@@ -5,6 +5,7 @@ import java.time.*;
 import com.santiagogomez.challenge.forohub.domain.usuario.Usuario;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 
 @Table(name = "topicos")
@@ -41,6 +42,22 @@ public class Topico {
 
     public void desactivarTopico(){
         this.status = false;
+    }
+
+    public void actualizarDatos(DatosActualizarTopico datosActualizarTopico) {
+
+        if (datosActualizarTopico.nuevoTitulo() != null) {
+            this.titulo = datosActualizarTopico.nuevoTitulo();
+        }
+        if (datosActualizarTopico.nuevoMensaje() != null) {
+            this.mensaje = datosActualizarTopico.nuevoMensaje();
+        }
+        if (datosActualizarTopico.nuevoCurso() != null) {
+            this.curso = datosActualizarTopico.nuevoCurso();
+        }
+
+        // update other fields as necessary
+
     }
 
 

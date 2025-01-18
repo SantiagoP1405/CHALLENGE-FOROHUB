@@ -12,5 +12,7 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
     Page<Topico> findByStatusTrue(Pageable paginacion);
 
+    Page<Topico> findByStatusFalse(Pageable paginacion);
+
     
 } 
