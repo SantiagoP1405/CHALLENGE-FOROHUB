@@ -1,0 +1,11 @@
+CREATE TABLE topicos (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    titulo VARCHAR(100) NOT NULL UNIQUE,
+    mensaje VARCHAR(100) NOT NULL UNIQUE,
+    fechaCreacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status TINYINT NOT NULL,
+    usuario_id BIGINT NOT NULL,
+    curso VARCHAR(100) NOT NULL,
+    CONSTRAINT fk_topico_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    PRIMARY KEY (id)  
+);

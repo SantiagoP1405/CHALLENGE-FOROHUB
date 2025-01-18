@@ -1,10 +1,11 @@
 package com.santiagogomez.challenge.forohub.domain.topico;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record DatosRegistroTopico(
 
-    @NotBlank
+    @NotNull
     Long idUsuario,
     @NotBlank
     String mensaje,
