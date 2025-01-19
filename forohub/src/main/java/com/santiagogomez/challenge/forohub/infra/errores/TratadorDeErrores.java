@@ -1,4 +1,4 @@
-package com.santiagogomez.challenge.forohub.infra;
+package com.santiagogomez.challenge.forohub.infra.errores;
 
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
