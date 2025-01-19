@@ -1,7 +1,10 @@
 package com.santiagogomez.challenge.forohub.domain.topico;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.santiagogomez.challenge.forohub.domain.respuesta.Respuesta;
 import com.santiagogomez.challenge.forohub.domain.usuario.Usuario;
 
 import jakarta.persistence.*;
@@ -29,6 +32,8 @@ public class Topico {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
     private String curso;
+    @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Respuesta> respuestas = new ArrayList<>();
     
 
     public Topico(DatosRegistroTopico datosRegistro, Usuario usuario) {
@@ -55,8 +60,6 @@ public class Topico {
         if (datosActualizarTopico.nuevoCurso() != null) {
             this.curso = datosActualizarTopico.nuevoCurso();
         }
-
-        // update other fields as necessary
 
     }
 
