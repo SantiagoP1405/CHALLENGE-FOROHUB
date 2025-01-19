@@ -30,7 +30,8 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body("El email ya está registrado.");
         }
         String hashPassword = passwordEncoder.encode(datosRegistro.password());
-        usuarioRepository.save(new Usuario(datosRegistro,hashPassword));
-        return ResponseEntity.ok("Usuario registrado exitosamente");
+        Usuario usuario = new Usuario(datosRegistro,hashPassword);
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Usuario registrado exitosamente. Tu id de usuario es: " + usuario.getId());
     }
 }

@@ -33,22 +33,26 @@ public class TopicoControler {
 
     //AÑADIR TOPICO
     @PostMapping
-    public ResponseEntity<DatosRespuestaTopico> registrarTopico(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<?> registrarTopico(@RequestBody @Valid DatosRegistroTopico datos, UriComponentsBuilder uriComponentsBuilder) {
         Usuario usuario = usuarioRepository.findById(datos.idUsuario())
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + datos.idUsuario()));
-        
-        Topico topico = topicoRepository.save(new Topico(datos, usuario));
-        DatosRespuestaTopico datosRespuestaTopico = new DatosRespuestaTopico(
-            topico.getId(), 
-            topico.getTitulo(), 
-            topico.getMensaje(), 
-            topico.getFechaCreacion(), 
-            topico.getUsuario().getNombre(), 
-            topico.getCurso()
-        );
+        var usuarioPassword = usuario.getPassword();
+        if (passwordEncoder.matches(datos.password(), usuarioPassword)) {
+            Topico topico = topicoRepository.save(new Topico(datos, usuario));
+            DatosRespuestaTopico datosRespuestaTopico = new DatosRespuestaTopico(
+                topico.getId(), 
+                topico.getTitulo(), 
+                topico.getMensaje(), 
+                topico.getFechaCreacion(), 
+                topico.getUsuario().getNombre(), 
+                topico.getCurso()
+            );
 
-        URI url = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-        return ResponseEntity.created(url).body(datosRespuestaTopico);
+            URI url = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+            return ResponseEntity.created(url).body(datosRespuestaTopico);
+        }
+        
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta. No tiene autorización para añadir el tópico");
     }
 
     //LISTAR TÓPICOS SIN RESPONDER
