@@ -31,12 +31,12 @@ public class TokenService {
                 .sign(algorithm);
         } 
         catch (JWTCreationException exception){
-            throw new RuntimeException();
+            throw new RuntimeException("No se pudo crear el token de acceso: " + exception.getMessage(), exception);
         }
     }
 
     private Instant generarFechaDeExpiracion(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-04:00"));
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-05:00"));
     }
 
     public String getSubject(String token) {
@@ -47,7 +47,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             verifier = JWT.require(algorithm)
-                .withIssuer("voll med")
+                .withIssuer("forohub")
                 .build()
                 .verify(token);
         

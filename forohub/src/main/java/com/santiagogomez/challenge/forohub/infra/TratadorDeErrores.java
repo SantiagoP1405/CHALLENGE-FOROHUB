@@ -1,6 +1,7 @@
 package com.santiagogomez.challenge.forohub.infra;
 
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,11 @@ public class TratadorDeErrores {
             .map(DatosErrorValidacion::new).toList();
 
         return ResponseEntity.badRequest().body(errores);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity tratarError403(AccessDeniedException e) {
+        return ResponseEntity.status(403).body("Acceso denegado: No tiene permisos para acceder a este recurso.");
     }
 
     @ExceptionHandler(ValidacionExcepcion.class) 

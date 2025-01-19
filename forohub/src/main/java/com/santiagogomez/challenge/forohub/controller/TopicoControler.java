@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,6 +27,9 @@ public class TopicoControler {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     //AÑADIR TOPICO
     @PostMapping
@@ -100,7 +104,7 @@ public class TopicoControler {
             Topico topico = topicoRepository.getReferenceById(id);
             if (datosActualizarTopico.usuario() == null || datosActualizarTopico.password() == null ||
             !datosActualizarTopico.usuario().equals(topico.getUsuario().getNombre()) ||
-            !datosActualizarTopico.password().equals(topico.getUsuario().getPassword())) {
+            !passwordEncoder.matches(datosActualizarTopico.password(), topico.getUsuario().getPassword())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nombre de usuario o contraseña incorrectos. No tiene autorización para eliminar el tópico");
             }
             topico.desactivarTopico();

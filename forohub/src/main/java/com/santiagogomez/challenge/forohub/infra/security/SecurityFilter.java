@@ -16,29 +16,34 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter{
-
+public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private TokenService tokenService;
-
     @Autowired
     private UsuarioRepository usuarioRepository;
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader != null){
-            var token = authHeader.replace("Bearer ", "");
-            var subject = tokenService.getSubject(token);
-            if (subject != null) {
-                //Para este punto el token ya es válidop
-                var usuario = usuarioRepository.findByNombre(subject);
-                var authentication = new UsernamePasswordAuthenticationToken(usuario,
-                null, usuario.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            var token = authHeader.substring(7);
+            try {
+                var subject = tokenService.getSubject(token);
+                if (subject != null) {
+                    // Token valido
+                    var usuario = usuarioRepository.findByNombre(subject);
+                    if (usuario != null) {
+                        var authentication = new UsernamePasswordAuthenticationToken
+                                (usuario, null, usuario.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Error al procesar el token " + e.getMessage());
+                ;
             }
         }
-        filterChain.doFilter(request, response); //llama al siguiente filtro
+        filterChain.doFilter(request, response);
     }
-
 }

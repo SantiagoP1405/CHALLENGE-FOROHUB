@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,15 +27,17 @@ public class Usuario implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String nombre;
+    @Column(unique = true)
     private String email;
     private String password;
 
 
-    public Usuario(DatosRegistroUsuario datosRegistroUsuario) {
+    public Usuario(@Valid DatosRegistroUsuario datosRegistroUsuario, String hashPassword) {
         this.nombre = datosRegistroUsuario.nombre();
         this.email = datosRegistroUsuario.email();
-        this.password = datosRegistroUsuario.password();
+        this.password = hashPassword;
     }
 
 

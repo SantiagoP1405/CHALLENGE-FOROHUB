@@ -4,5 +4,5 @@ public record DatosAutenticacionUsuario(
     String nombre,
     String password
 ) {
-
+    
 }
